@@ -50,10 +50,19 @@ module OpenPipette
     #   the data deserialized from response body (could be nil), response status code and response headers.
     def call_api(http_method, path, opts = {})
       begin
+        if config.debugging
+          config.logger.debug "HTTP request method: #{http_method}"
+          config.logger.debug "HTTP request path: #{path}"
+          config.logger.debug "HTTP request options: #{opts.inspect}"
+        end
         response = build_request(http_method.to_s, path, opts)
 
         if config.debugging
-          config.logger.debug "HTTP response body ~BEGIN~\n#{response.body}\n~END~\n"
+          if response.respond_to?(:body)
+            config.logger.debug "HTTP response body ~BEGIN~\n#{response.body}\n~END~\n"
+          else
+            config.logger.debug "HTTP response inspect ~BEGIN~\n#{response.inspect}\n~END~\n"
+          end
         end
 
         response.raise_for_status
@@ -95,17 +104,34 @@ module OpenPipette
       query_params = opts[:query_params] || {}
       form_params = opts[:form_params] || {}
 
+      if config.debugging
+        config.logger.debug "Pre-Auth:"
+        config.logger.debug "HTTP request header params: #{header_params.inspect}"
+        config.logger.debug "HTTP request query params: #{query_params.inspect}"
+        config.logger.debug "HTTP request form params: #{form_params.inspect}"
+      end
+
       update_params_for_auth! header_params, query_params, opts[:auth_names]
+
+      if config.debugging
+        config.logger.debug "Post-Auth:"
+        config.logger.debug "HTTP request header params: #{header_params.inspect}"
+        config.logger.debug "HTTP request query params: #{query_params.inspect}"
+        config.logger.debug "HTTP request form params: #{form_params.inspect}"
+      end
 
       if %w[POST PATCH PUT DELETE].include?(http_method)
         body_params = build_request_body(header_params, form_params, opts[:body])
         if config.debugging
-          config.logger.debug "HTTP request body param ~BEGIN~\n#{req_body}\n~END~\n"
+          config.logger.debug "HTTP request body param ~BEGIN~\n#{body_params.inspect}\n~END~\n"
         end
       end
       req_opts = {
         :headers => HTTPX::Headers.new(header_params)
       }
+      if config.debugging
+        config.logger.debug "HTTP request options: #{req_opts.inspect}"
+      end
       req_opts.merge!(body_params) if body_params
       req_opts[:params] = query_params if query_params && !query_params.empty?
       session.request(http_method, url, **req_opts)
@@ -120,7 +146,7 @@ module OpenPipette
     def build_request_body(header_params, form_params, body)
       # http form
       if header_params['Content-Type'] == 'application/x-www-form-urlencoded' ||
-         header_params['Content-Type'] == 'multipart/form-data'
+        header_params['Content-Type'] == 'multipart/form-data'
         header_params.delete('Content-Type') # httpx takes care of this
         { form: form_params }
       elsif body
