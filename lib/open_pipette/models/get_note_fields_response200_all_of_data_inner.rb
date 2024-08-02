@@ -171,7 +171,7 @@ module OpenPipette
     # @return true if the model is valid
     def valid?
       warn '[DEPRECATED] the `valid?` method is obsolete'
-      field_type_validator = EnumAttributeValidator.new('String', ["address", "date", "daterange", "double", "enum", "monetary", "org", "people", "phone", "set", "text", "time", "timerange", "user", "varchar", "varchar_auto", "visible_to"])
+      field_type_validator = EnumAttributeValidator.new('String', ["address", "date", "daterange", "double", "enum", "monetary", "org", "people", "phone", "set", "text", "time", "timerange", "user", "varchar", "varchar_auto", "int", "picture", "int", "visible_to"])
       return false unless field_type_validator.valid?(@field_type)
       true
     end
@@ -179,7 +179,7 @@ module OpenPipette
     # Custom attribute writer method checking allowed values (enum).
     # @param [Object] field_type Object to be assigned
     def field_type=(field_type)
-      validator = EnumAttributeValidator.new('String', ["address", "date", "daterange", "double", "enum", "monetary", "org", "people", "phone", "set", "text", "time", "timerange", "user", "varchar", "varchar_auto", "visible_to"])
+      validator = EnumAttributeValidator.new('String', ["address", "date", "daterange", "double", "enum", "monetary", "org", "people", "phone", "set", "text", "time", "timerange", "user", "varchar", "varchar_auto", "int", "picture", "int", "visible_to"])
       unless validator.valid?(field_type)
         fail ArgumentError, "invalid value for \"field_type\", must be one of #{validator.allowable_values}."
       end
