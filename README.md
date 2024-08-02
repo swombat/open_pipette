@@ -89,6 +89,29 @@ end
 
 ```
 
+**UPDATE:**
+
+The following code works. Use this as a template instead:
+
+```ruby
+class PipedriveApi < GenericApi
+  def initialize(token: ENV['PIPEDRIVE_API_TOKEN'])
+    OpenPipette.configure do |config|
+      config.api_key['api_token'] = token
+      config.api_key['api_key'] = token
+      config.ssl = { verify_mode: OpenSSL::SSL::VERIFY_PEER }
+    end
+
+    def get_deal(deal_id)
+      @deals_api ||= OpenPipette::DealsApi.new
+      @deals_api.get_deal(deal_id)
+    end
+  end
+
+end
+
+```
+
 ## Documentation for API Endpoints
 
 All URIs are relative to *https://api.pipedrive.com/v1*
