@@ -50,6 +50,7 @@ module OpenPipette
             typed_data = find_and_cast_into_type(klass, data)
             return typed_data if typed_data
           rescue # rescue all errors so we keep iterating even if the current item lookup raises
+            puts e.full_message
           end
         end
 
