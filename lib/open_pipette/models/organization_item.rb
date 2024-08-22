@@ -160,6 +160,10 @@ module OpenPipette
     # Please refer to response schema of <a href=\"https://developers.pipedrive.com/docs/api/v1/Activities#getActivity\">Activity</a>
     attr_accessor :next_activity
 
+    attr_accessor :custom_fields
+
+    attr_accessor :attributes_hash
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
@@ -296,12 +300,17 @@ module OpenPipette
         fail ArgumentError, "The input argument (attributes) must be a hash in `OpenPipette::OrganizationItem` initialize method"
       end
 
+      self.attributes_hash = attributes
+      self.custom_fields = {}
+
       # check to see if the attribute exists and convert string to symbol for hash key
       attributes = attributes.each_with_object({}) { |(k, v), h|
         if (!self.class.attribute_map.key?(k.to_sym))
-          fail ArgumentError, "`#{k}` is not a valid attribute in `OpenPipette::OrganizationItem`. Please check the name to make sure it's valid. List of attributes: " + self.class.attribute_map.keys.inspect
+          # fail ArgumentError, "`#{k}` is not a valid attribute in `OpenPipette::OrganizationItem`. Please check the name to make sure it's valid. List of attributes: " + self.class.attribute_map.keys.inspect
+          self.custom_fields[k] = v
+        else
+          h[k.to_sym] = v
         end
-        h[k.to_sym] = v
       }
 
       if attributes.key?(:'id')
@@ -604,6 +613,8 @@ module OpenPipette
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
+      leftover_keys = attributes.keys - transformed_hash.keys
+      transformed_hash.merge!(leftover_keys.map { |key| [key, attributes[key]] }.to_h)
       new(transformed_hash)
     end
 
@@ -665,6 +676,7 @@ module OpenPipette
     # Returns the object in the form of hash
     # @return [Hash] Returns the object in the form of hash
     def to_hash
+      return attributes_hash if attributes_hash
       hash = {}
       self.class.attribute_map.each_pair do |attr, param|
         value = self.send(attr)

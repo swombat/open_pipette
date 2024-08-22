@@ -233,8 +233,16 @@ module OpenPipette
 
       fail "Content-Type is not supported: #{content_type}" unless json_mime?(content_type)
 
+      if config.debugging
+        config.logger.debug "Deserializing response body: ~BEGIN~\n#{body}\n~END~\n"
+      end
+
       begin
         data = JSON.parse("[#{body}]", :symbolize_names => true)[0]
+
+        if config.debugging
+          config.logger.debug "Deserialized response body: ~BEGIN~\n#{data.inspect}\n~END~\n"
+        end
       rescue JSON::ParserError => e
         if %w(String Date Time).include?(return_type)
           data = body
