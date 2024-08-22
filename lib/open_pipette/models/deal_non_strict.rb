@@ -396,6 +396,9 @@ module OpenPipette
         fail ArgumentError, "The input argument (attributes) must be a hash in `OpenPipette::DealNonStrict` initialize method"
       end
 
+      self.custom_fields = {}
+      self.attributes_hash = attributes
+
       # check to see if the attribute exists and convert string to symbol for hash key
       attributes = attributes.each_with_object({}) { |(k, v), h|
         if (!self.class.attribute_map.key?(k.to_sym))
