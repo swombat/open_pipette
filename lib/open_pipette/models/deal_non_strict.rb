@@ -194,23 +194,27 @@ module OpenPipette
     # The optional ID to further distinguish the Marketing channel.
     attr_accessor :channel_id
 
-    # Only available in Advanced and above plans  The Annual Recurring Revenue of the deal  Null if there are no products attached to the deal 
+    # Only available in Advanced and above plans  The Annual Recurring Revenue of the deal  Null if there are no products attached to the deal
     attr_accessor :arr
 
-    # Only available in Advanced and above plans  The Monthly Recurring Revenue of the deal  Null if there are no products attached to the deal 
+    # Only available in Advanced and above plans  The Monthly Recurring Revenue of the deal  Null if there are no products attached to the deal
     attr_accessor :mrr
 
-    # Only available in Advanced and above plans  The Annual Contract Value of the deal  Null if there are no products attached to the deal 
+    # Only available in Advanced and above plans  The Annual Contract Value of the deal  Null if there are no products attached to the deal
     attr_accessor :acv
 
-    # Only available in Advanced and above plans  The Currency for Annual Recurring Revenue of the deal  If the `arr` is null, this will also be null 
+    # Only available in Advanced and above plans  The Currency for Annual Recurring Revenue of the deal  If the `arr` is null, this will also be null
     attr_accessor :arr_currency
 
-    # Only available in Advanced and above plans  The Currency for Monthly Recurring Revenue of the deal  If the `mrr` is null, this will also be null 
+    # Only available in Advanced and above plans  The Currency for Monthly Recurring Revenue of the deal  If the `mrr` is null, this will also be null
     attr_accessor :mrr_currency
 
-    # Only available in Advanced and above plans  The Currency for Annual Contract Value of the deal  If the `acv` is null, this will also be null 
+    # Only available in Advanced and above plans  The Currency for Annual Contract Value of the deal  If the `acv` is null, this will also be null
     attr_accessor :acv_currency
+
+    attr_accessor :attributes_hash
+
+    attr_accessor :custom_fields
 
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
@@ -395,9 +399,11 @@ module OpenPipette
       # check to see if the attribute exists and convert string to symbol for hash key
       attributes = attributes.each_with_object({}) { |(k, v), h|
         if (!self.class.attribute_map.key?(k.to_sym))
-          fail ArgumentError, "`#{k}` is not a valid attribute in `OpenPipette::DealNonStrict`. Please check the name to make sure it's valid. List of attributes: " + self.class.attribute_map.keys.inspect
+          # fail ArgumentError, "`#{k}` is not a valid attribute in `OpenPipette::DealNonStrict`. Please check the name to make sure it's valid. List of attributes: " + self.class.attribute_map.keys.inspect
+          self.custom_fields[k] = v
+        else
+          h[k.to_sym] = v
         end
-        h[k.to_sym] = v
       }
 
       if attributes.key?(:'id')
@@ -790,6 +796,8 @@ module OpenPipette
           transformed_hash["#{key}"] = _deserialize(type, attributes[attribute_map[key]])
         end
       end
+      leftover_keys = attributes.keys - transformed_hash.keys
+      transformed_hash.merge!(leftover_keys.map { |key| [key, attributes[key]] }.to_h)
       new(transformed_hash)
     end
 
@@ -851,6 +859,7 @@ module OpenPipette
     # Returns the object in the form of hash
     # @return [Hash] Returns the object in the form of hash
     def to_hash
+      return attributes_hash if attributes_hash
       hash = {}
       self.class.attribute_map.each_pair do |attr, param|
         value = self.send(attr)
