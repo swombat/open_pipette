@@ -7039,8 +7039,6 @@ paths:
           name: include_fields
           schema:
             type: string
-            enum:
-              - deal.cc_email
           description: Supports including optional fields in the results which are not provided by default
         - in: query
           name: start

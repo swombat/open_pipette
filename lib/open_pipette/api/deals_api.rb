@@ -1996,10 +1996,6 @@ module OpenPipette
       if @api_client.config.client_side_validation && opts[:'status'] && !allowable_values.include?(opts[:'status'])
         fail ArgumentError, "invalid value for \"status\", must be one of #{allowable_values}"
       end
-      allowable_values = ["deal.cc_email"]
-      if @api_client.config.client_side_validation && opts[:'include_fields'] && !allowable_values.include?(opts[:'include_fields'])
-        fail ArgumentError, "invalid value for \"include_fields\", must be one of #{allowable_values}"
-      end
       # resource path
       local_var_path = '/deals/search'
 

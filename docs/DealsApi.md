@@ -2212,7 +2212,7 @@ opts = {
   person_id: 56, # Integer | Will filter deals by the provided person ID. The upper limit of found deals associated with the person is 2000.
   organization_id: 56, # Integer | Will filter deals by the provided organization ID. The upper limit of found deals associated with the organization is 2000.
   status: 'open', # String | Will filter deals by the provided specific status. open = Open, won = Won, lost = Lost. The upper limit of found deals associated with the status is 2000.
-  include_fields: 'deal.cc_email', # String | Supports including optional fields in the results which are not provided by default
+  include_fields: 'include_fields_example', # String | Supports including optional fields in the results which are not provided by default
   start: 56, # Integer | Pagination start. Note that the pagination is based on main results and does not include related items when using `search_for_related_items` parameter.
   limit: 56 # Integer | Items shown per page
 }
