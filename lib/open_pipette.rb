@@ -656,3 +656,15 @@ module OpenPipette
     end
   end
 end
+
+# Monkey Patch to remove nil values from nested hashes
+class Hash
+  def deep_compact!
+    each do |key, value|
+      if value.is_a?(Hash)
+        value.deep_compact!
+      end
+    end
+    delete_if { |_, value| value.nil? }
+  end
+end

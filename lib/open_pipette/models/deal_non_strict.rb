@@ -801,6 +801,7 @@ module OpenPipette
       end
       leftover_keys = attributes.keys - transformed_hash.keys
       transformed_hash.merge!(leftover_keys.map { |key| [key, attributes[key]] }.to_h)
+      transformed_hash.deep_compact!
       new(transformed_hash)
     end
 
