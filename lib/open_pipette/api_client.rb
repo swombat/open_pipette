@@ -251,7 +251,10 @@ module OpenPipette
         end
       end
 
-      convert_to_type data, return_type
+      # convert_to_type data, return_type
+      data.deep_compact!
+      data.attributize!
+      data
     end
 
     # Convert data to the given return type.
