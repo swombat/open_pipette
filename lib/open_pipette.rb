@@ -685,3 +685,11 @@ class Hash
     end
   end
 end
+
+class Array
+  def attributize!
+    self.each do |item|
+      item.attributize! if item.respond_to?(:attributize!)
+    end
+  end
+end
