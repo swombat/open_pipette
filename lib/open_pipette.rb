@@ -672,7 +672,7 @@ class Hash
   def attributize!
     @attributized = true
     keys.each do |key|
-      self[key.to_s].attributize! if self[key.to_s].respond_to?(:attributize!)
+      self[key].attributize! if self[key].respond_to?(:attributize!)
     end
     self
   end
