@@ -666,6 +666,7 @@ class Hash
       end
     end
     delete_if { |_, value| value.nil? }
+    self
   end
 
   def attributize!
@@ -673,6 +674,7 @@ class Hash
     keys.each do |key|
       self[key.to_s].attributize! if self[key.to_s].respond_to?(:attributize!)
     end
+    self
   end
 
   def method_missing(method, *args, &block)
