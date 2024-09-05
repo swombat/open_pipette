@@ -657,39 +657,41 @@ module OpenPipette
   end
 end
 
-# Monkey Patch to remove nil values from nested hashes
-class Hash
-  def deep_compact!
-    each do |key, value|
-      if value.is_a?(Hash)
-        value.deep_compact!
+unless Hash.new.respond_to?(:deep_compact!) && Array.new.respond_to?(:attributize!)
+  # Monkey Patch to remove nil values from nested hashes
+  class Hash
+    def deep_compact!
+      each do |key, value|
+        if value.is_a?(Hash)
+          value.deep_compact!
+        end
+      end
+      delete_if { |_, value| value.nil? }
+      self
+    end
+
+    def attributize!
+      @attributized = true
+      keys.each do |key|
+        self[key].attributize! if self[key].respond_to?(:attributize!)
+      end
+      self
+    end
+
+    def method_missing(method, *args, &block)
+      if @attributized
+        self[method] || self[method.to_s]
+      else
+        super
       end
     end
-    delete_if { |_, value| value.nil? }
-    self
   end
 
-  def attributize!
-    @attributized = true
-    keys.each do |key|
-      self[key].attributize! if self[key].respond_to?(:attributize!)
-    end
-    self
-  end
-
-  def method_missing(method, *args, &block)
-    if @attributized
-      self[method] || self[method.to_s]
-    else
-      super
-    end
-  end
-end
-
-class Array
-  def attributize!
-    self.each do |item|
-      item.attributize! if item.respond_to?(:attributize!)
+  class Array
+    def attributize!
+      self.each do |item|
+        item.attributize! if item.respond_to?(:attributize!)
+      end
     end
   end
 end
